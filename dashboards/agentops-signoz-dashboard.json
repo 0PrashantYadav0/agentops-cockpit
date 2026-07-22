@@ -1,0 +1,108 @@
+{
+  "title": "AgentOps Cockpit - AI Agent Observability",
+  "description": "Cost, latency, and reliability for AI agents instrumented with AgentOps + OpenTelemetry gen_ai conventions.",
+  "tags": ["agentops", "genai", "llm", "hackathon"],
+  "variables": {},
+  "widgets": [
+    {
+      "title": "Total token cost (USD) over time",
+      "description": "Sum of gen_ai.usage.cost_usd across all agent runs.",
+      "panelTypes": "graph",
+      "query": {
+        "queryType": "builder",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "aggregateOperator": "sum",
+              "aggregateAttribute": {"key": "gen_ai.usage.cost_usd", "type": "tag"},
+              "filters": {"op": "AND", "items": []},
+              "expression": "A",
+              "legend": "total cost"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Cost by model",
+      "panelTypes": "graph",
+      "query": {
+        "queryType": "builder",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "aggregateOperator": "sum",
+              "aggregateAttribute": {"key": "gen_ai.usage.cost_usd", "type": "tag"},
+              "groupBy": [{"key": "gen_ai.request.model", "type": "tag"}],
+              "expression": "A",
+              "legend": "{{gen_ai.request.model}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Cost by user",
+      "panelTypes": "graph",
+      "query": {
+        "queryType": "builder",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "aggregateOperator": "sum",
+              "aggregateAttribute": {"key": "gen_ai.usage.cost_usd", "type": "tag"},
+              "groupBy": [{"key": "enduser.id", "type": "tag"}],
+              "expression": "A",
+              "legend": "{{enduser.id}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Agent run p95 latency",
+      "panelTypes": "graph",
+      "query": {
+        "queryType": "builder",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "aggregateOperator": "p95",
+              "aggregateAttribute": {"key": "duration_nano", "type": ""},
+              "filters": {"op": "AND", "items": [
+                {"key": {"key": "name"}, "op": "=", "value": "agent.run research-assistant"}
+              ]},
+              "expression": "A",
+              "legend": "p95 latency"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Error rate by span",
+      "panelTypes": "graph",
+      "query": {
+        "queryType": "builder",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "traces",
+              "aggregateOperator": "count",
+              "filters": {"op": "AND", "items": [
+                {"key": {"key": "has_error"}, "op": "=", "value": "true"}
+              ]},
+              "groupBy": [{"key": "name", "type": ""}],
+              "expression": "A",
+              "legend": "{{name}}"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
