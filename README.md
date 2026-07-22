@@ -1,7 +1,6 @@
 # AgentOps Cockpit
 
 > **Real observability + auto-triage for AI agents, powered by SigNoz.**
-> Theme 1 · Idea 1 of the *Agents of SigNoz* hackathon (the #1-ranked idea, 53/60).
 
 If you can't observe your AI agents, you don't own them. AgentOps Cockpit instruments a **real** AI
 agent (a **Llama 3.2 model on Ollama**, live **Wikipedia** search, and **real embedding retrieval**)
