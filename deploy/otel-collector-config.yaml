@@ -1,0 +1,33 @@
+# Standalone OpenTelemetry Collector config for AgentOps live-export proof.
+#
+# This is the SAME technology SigNoz's ingester ("signoz-otel-collector") is
+# built on. Running the agent against this collector proves the OTLP wire export
+# path end-to-end. On a machine where SigNoz's ClickHouse-Keeper starts (Docker
+# Desktop / OrbStack / Linux), point OTEL_EXPORTER_OTLP_ENDPOINT at SigNoz
+# instead and the exact same spans land in the SigNoz UI.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  batch: {}
+
+exporters:
+  debug:
+    verbosity: detailed
+  file:
+    path: /output/received-spans.json
+
+service:
+  telemetry:
+    logs:
+      level: debug
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, file]
